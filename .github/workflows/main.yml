@@ -22,7 +22,8 @@ jobs:
 
       - name: Copy files to server
         run: |
-          scp -r . ${{ secrets.USER }}@${{ secrets.HOST }}:/home/ubuntu/inves-master
+         scp -r . ${{ secrets.USER }}@${{ secrets.TEST }}:/home/ubuntu/inves-master
+         ssh ${{ secrets.USER }}@${{ secrets.TEST }} << 'EOF'
 
       - name: Deploy via SSH
         run: |
