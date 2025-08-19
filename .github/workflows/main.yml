@@ -1,4 +1,4 @@
-name: Deploy Website to AWS
+yname: Deploy Website to AWS
 
 on:
   push:
@@ -18,15 +18,15 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.TEST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.Deploy }} >> ~/.ssh/known_hosts
 
       - name: Copy website files to server
         run: |
-          scp -r . ${{ secrets.USER }}@${{ secrets.TEST }}:/home/ubuntu/inves-master
+          scp -r . ${{ secrets.USER }}@${{ secrets.Deploy }}:/home/ubuntu/inves-master
 
       - name: Deploy on remote server
         run: |
-          ssh ${{ secrets.USER }}@${{ secrets.TEST }} << 'EOF'
+          ssh ${{ secrets.USER }}@${{ secrets.Deploy }} << 'EOF'
             cd /home/ubuntu/inves-master
             docker stop inves || true
             docker rm inves || true
