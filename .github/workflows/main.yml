@@ -1,4 +1,4 @@
-yname: Deploy Website to AWS
+name: Deploy Website to AWS
 
 on:
   push:
