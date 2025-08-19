@@ -1,33 +1,32 @@
-name: Deploy to AWS
+name: Deploy Website to AWS
 
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to the main branch
+      - main   # Change if your main branch is named differently
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH key
+      - name: Set up SSH key and known_hosts
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.TEST }} >> ~/.ssh/known_hosts
 
-      - name: Copy files to server
+      - name: Copy website files to server
         run: |
-         scp -r . ${{ secrets.USER }}@${{ secrets.TEST }}:/home/ubuntu/inves-master
-         ssh ${{ secrets.USER }}@${{ secrets.TEST }} << 'EOF'
+          scp -r . ${{ secrets.USER }}@${{ secrets.TEST }}:/home/ubuntu/inves-master
 
-      - name: Deploy via SSH
+      - name: Deploy on remote server
         run: |
-          ssh ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+          ssh ${{ secrets.USER }}@${{ secrets.TEST }} << 'EOF'
             cd /home/ubuntu/inves-master
             docker stop inves || true
             docker rm inves || true
