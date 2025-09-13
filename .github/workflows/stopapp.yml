@@ -1,19 +1,23 @@
-name: Stop Docker App on EC2
+name: Deploy to EC2 via SSH
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Manual run
   schedule:
-    - cron: "44 4 * * *"  # 5 PM UTC daily
+    - cron: "47 4 * * *"  # Runs daily at 04:35 UTC
 
 jobs:
-  stop:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Stop Docker App
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          bash ~/stop-app.sh
+      - name: Deploy via SSH to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "Connected to EC2"
+            cd ~/your-app-folder
+            docker compose down || docker stop myapp && docker rm myapp
+            docker compose up -d --build
